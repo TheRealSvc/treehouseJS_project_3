@@ -1,15 +1,16 @@
-##The "Name" field
+
+## The "Name" field
 When the page first loads, the first text field should have the focus state by default to prompt the user.
 
 Set the focus property to true on the <input type="text"> element for the "Name" field.
 
-##"Job Role" section
+## "Job Role" section
 The "Job Role" section has an <input type="text"> field where users can enter a custom job role. If the user selects "Other" in the "Job Role" drop down menu, they can enter info into the "Other job role" text field. But this field should be hidden by default and only displayed once users select "Other" in the drop down menu, and be hidden if the user selects any other option.
 
 Hide the "text field" with the id of "other-job-role" so it is not displayed when the form first loads.
 Program the "Job Role" <select> element to listen for user changes. When a change is detected, display/hide the "text field" based on the user’s selection in the drop down menu.
 
-##"T-Shirt Info" section
+## "T-Shirt Info" section
 The options in the "Color" drop down menu are not available for each t-shirt design. So the user shouldn’t be able to see or choose a color option until they have chosen a design.
 
 Disable the "Color" <select> element.
@@ -26,6 +27,7 @@ Project Warm Up: For some experience with the techniques you’ll use in this se
 Pro Tip:
 The selected attribute can determine which option element is displayed in the select field.
 The hidden attribute can prevent option elements from being displayed in the drop down menu.
+
 ## "Register for Activities" section
 The "Total: $" element below the "Register for Activities" section should update to reflect the sum of the cost of the user’s selected activities.
 
