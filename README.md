@@ -1,13 +1,15 @@
-The "Name" field
+##The "Name" field
 When the page first loads, the first text field should have the focus state by default to prompt the user.
 
 Set the focus property to true on the <input type="text"> element for the "Name" field.
-"Job Role" section
+
+##"Job Role" section
 The "Job Role" section has an <input type="text"> field where users can enter a custom job role. If the user selects "Other" in the "Job Role" drop down menu, they can enter info into the "Other job role" text field. But this field should be hidden by default and only displayed once users select "Other" in the drop down menu, and be hidden if the user selects any other option.
 
 Hide the "text field" with the id of "other-job-role" so it is not displayed when the form first loads.
 Program the "Job Role" <select> element to listen for user changes. When a change is detected, display/hide the "text field" based on the user’s selection in the drop down menu.
-"T-Shirt Info" section
+
+##"T-Shirt Info" section
 The options in the "Color" drop down menu are not available for each t-shirt design. So the user shouldn’t be able to see or choose a color option until they have chosen a design.
 
 Disable the "Color" <select> element.
@@ -24,7 +26,7 @@ Project Warm Up: For some experience with the techniques you’ll use in this se
 Pro Tip:
 The selected attribute can determine which option element is displayed in the select field.
 The hidden attribute can prevent option elements from being displayed in the drop down menu.
-"Register for Activities" section
+## "Register for Activities" section
 The "Total: $" element below the "Register for Activities" section should update to reflect the sum of the cost of the user’s selected activities.
 
 Program the "Register for Activities" fieldset element to listen for user changes. When a change is detected:
@@ -33,11 +35,12 @@ If an activity is unchecked, the total cost should decrease by that amount.
 The <p> element with the id of "activity-cost" below the activities section should update to reflect the chosen activities' total cost.
 Project Warm Up: For some experience with the techniques you’ll use in this section, complete this short exercise - Checkboxes.
 
-"Payment Info" section
+## "Payment Info" section
 The credit card payment option should be selected for the user by default. So when the form first loads, "Credit Card" should be displayed in the "I'm going to pay with" <select> element, and the credit card payment section should be the only payment section displayed in the form’s UI. And when the user selects one of the payment options from the "I'm going to pay with" drop down menu, the form should update to display only the chosen payment method section.
 
 Program the "I'm going to pay with" <select> element to listen for user changes. When a change is detected, hide all payment sections in the form’s UI except the selected one.
-Form validation
+
+## Form validation
 Users shouldn’t be able to submit a form without the required information, or with invalid information. To prevent that from happening, avoid using plugins, libraries, snippets or the built-in HTML5 validation, and create your own custom form validation.
 
 Note: Form submission behavior will differ depending on whether you’re running the project with a local server, or just viewing the files in the browser. It is recommended that you view the files in the browser instead of serving them locally. This helps facilitate development and testing, and this is how the project will be reviewed.
@@ -57,7 +60,8 @@ Avoid using snippets, libraries or plugins.
 Only validate the three credit card fields if "credit card" is the selected payment option.
 Only call `preventDefault` on the `event` object if one or more of the required fields is invalid.
 Pro Tip:A recommended approach is to create helper functions for each of the required fields to be validated. For example, for the "Name" field, a function could check the "Name" field’s value. If it equals an empty string or only blank spaces, the function could log out a helpful statement and return false. Otherwise it would return true. And then in the `submit` event listener, you could call that helper function and check what it returns: if it returns false, you would prevent the form from submitting. Otherwise, you would avoid preventing form submission, and allow the `submit` handler to either submit or move onto checking the next required field.
-Accessibility
+
+## Accessibility
 To craft web experiences that are accessible to all users, reach the largest possible audience, and are in compliance with web regulations, it’s important to consider the needs of users with disabilities when presenting content. Some users require the help of assistive technologies like screen readers, and others aren’t able to recognize prompts that are indicated by color changes alone. Complete the steps below to make your form more accessible.
 
 Make the focus states of the activities more obvious to all users. Pressing the tab key on your keyboard moves the focus state from one input to the next, but the focus indicators in the "Register for Activities" section aren’t very obvious.
@@ -80,7 +84,8 @@ Error messages should not be visible by default or when the form first loads.
 JavaScript alerts and prompts should not be used in your form validation error indications.
 If your user tries to submit an empty form, all form validation error indications should be displayed at once, rather than one at a time.
 Pro Tip: A recommended approach to this part of the project is to create helper functions that accept an argument for the element that is being validated. For example, the function could accept an argument for the text input element that was checked. Then the function would update the styles for that element’s parent element and the last child of that parent element. One function could update the styles when errors are detected. And another function could update the styles when errors are resolved.
-Finishing the Project
+
+## Finishing the Project
 The final stage of the project is perhaps the most important. This is where your developer skills really shine as you carefully double-check that you've accomplished all requirements and that your project is ready for submission.
 
 Code Comments - It’s a best practice for development code to be well commented. Replace provided comments with your own to briefly describe your code and what it does.
@@ -90,7 +95,8 @@ Open and run your app.
 Open the Chrome DevTools console and ensure that there are no errors displayed when the app is being used and tested.
 Pretend to be a user and test all aspects of functionality and every possible state of the app, while monitoring the console for bugs and resolving any that arise.
 Cross Browser Consistency - To pass, your project only needs to work in Chrome but it’s common for developers to test their projects in multiple browsers to know how they will perform out in the wild.
-Before Submitting the Project
+
+## Before Submitting the Project
 Before you submit your project, check off each item in the project submissions checklist below.
 
  I have read all of the project instructions, including the "How you’ll be graded" section for this project.
@@ -109,7 +115,7 @@ Before you submit your project, check off each item in the project submissions c
 
  I understand that what I submit is what will get reviewed and that when I submit my project, any changes I make after the submission won't be seen by my reviewer.
 
-Extra Credit
+## Extra Credit
 To get an "exceeds" rating, complete all of the steps below:
 
  3 steps
