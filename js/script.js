@@ -88,8 +88,7 @@ payTop.addEventListener( 'change', (e) => {
 
 
 // 8 ## Form validation
-const submitButton = document.querySelector("button[type=submit]") ;
-
+// some helper functions first
 function getSelectedPayment(payCol) {
   for (i=0; i < payCol.length ; i++) {
     if (payCol[i].getAttribute('selected') === 'selected') {
@@ -99,27 +98,60 @@ function getSelectedPayment(payCol) {
   return payMethodSelected ; 
 }  
 
-function validateName() {}
+/*
+# some stuff from the warmup
+const form = document.querySelector("form");
+const nameElement = document.querySelector("#name");
+const email = document.querySelector("#email");
+const nameValidator = () => { } 
+form.addEventListener('submit', e => {
+  e.preventDefault(); // this is fired when validation did not pass
+
+*/
 
 
-function validateEmail() {}
-
-
-function validateActivities() {}
-
-
-function validateCreditCard() {}
-
-
-submitButton.addEventListener('click' , () => {
-var valName = validateName() ;
-var valEmail = validateEmail() ;
-var valActivities = validateActivities() ;
-
-if (getSelectedPayment(payCol) === "credit-card") {
-var valCreditCard = validateCreditCard() ;
-console.log('hier') ;
+const validateName = (str) => {
+  const nameIsValid = /^[a-z]+$/.test(str);
+  nameIsValid ? console.log('korrekt') : console.log("falsch") ;
+return nameIsValid ;
 }
+
+
+const validateEmail = () => {
+
+}
+
+
+const validateActivities = () => {
+
+}
+
+
+const validateCreditCard = () => {
+
+}
+
+
+//const submitButton = document.querySelector("button[type=submit]") ;
+//submitButton.addEventListener('click' , () => {
+
+const form = document.querySelector("form");
+form.addEventListener('submit', e => {
+
+var valName = validateName(document.querySelector("#name").value) ;
+//var valEmail = validateEmail() ;
+//var valActivities = validateActivities() ;
+
+/*if (getSelectedPayment(payCol) === "credit-card") {
+  var valCreditCard = validateCreditCard() ;
+  console.log('hier') ;
+} */
+if (!valName) {
+  console.log("gspkerlb")
+  alert("The Name wasnt spelled correctly !")
+  e.preventDefault(); // this is fired when validation did not pass
+}
+
 }) 
 
 
