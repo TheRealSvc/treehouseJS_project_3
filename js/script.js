@@ -52,6 +52,7 @@ for (i=0; i < elCol.length ; i++) {
 }
 ) 
 
+
 // 6 "Register for Activities" section
 const activityCheckboxes = document.querySelector("#activities-box") ;
 const checkInputs = activityCheckboxes.children ;
@@ -69,7 +70,6 @@ activityCheckboxes.addEventListener( 'change', () => {
 
 
 // 7 "Payment Info" section
-
 const payCol = document.querySelectorAll("#payment option") ;
 for (i=0 ; i < payCol.length; i++)  {
   payCol[i].removeAttribute("selected") ;
@@ -117,18 +117,23 @@ return nameIsValid ;
 }
 
 
-const validateEmail = () => {
-
+const validateEmail = (str) => {
+  const emailIsValid = /^\w+@\w+.com$/.test(str);
+  emailIsValid ? console.log('korrekt') : console.log("falsch") ;
+return emailIsValid ;
 }
 
 
-const validateActivities = () => {
-
+const validateActivities = (str) => {
+ return str=='Total: $0' ? false : true ; 
 }
 
 
 const validateCreditCard = () => {
-
+  zipEl = document.querySelector("#zip") ;
+  ccNumEl = document.querySelector("#cc-num") ; 
+  ccCvv = document.querySelector("#cvv") ;
+  return /^\d{3}$/.test(ccCvv.value) && /^\d{5}$/.test(zipEl.value) && /^\d{13-16}$/.test(ccNumEl.value)   ;   
 }
 
 
@@ -136,19 +141,34 @@ const validateCreditCard = () => {
 //submitButton.addEventListener('click' , () => {
 
 const form = document.querySelector("form");
+
 form.addEventListener('submit', e => {
-
 var valName = validateName(document.querySelector("#name").value) ;
-//var valEmail = validateEmail() ;
-//var valActivities = validateActivities() ;
+var valEmail = validateEmail(document.querySelector("#email").value) ;
+var valActivities = validateActivities(  document.querySelector(".activities-cost").innerText ) ;
 
-/*if (getSelectedPayment(payCol) === "credit-card") {
+if (getSelectedPayment(payCol) === "credit-card") {
   var valCreditCard = validateCreditCard() ;
-  console.log('hier') ;
-} */
+  if (!valCreditCard) {
+    alert("Something is wrong with the credit card entries !") ;
+  }
+} 
+
 if (!valName) {
-  console.log("gspkerlb")
+  console.log("gspkerlb") ;
   alert("The Name wasnt spelled correctly !")
+  e.preventDefault(); // this is fired when validation did not pass
+}
+
+if (!valEmail) {
+  console.log("gspkerlb") ;
+  alert("The Email isnt a valid adress !")
+  e.preventDefault(); // this is fired when validation did not pass
+}
+
+if (!valActivities) {
+  console.log("gspkerlb") ;
+  alert("Please select at least one activity !")
   e.preventDefault(); // this is fired when validation did not pass
 }
 
