@@ -1,8 +1,8 @@
-// 3 have name focused as default after reloading 
+// 3 have name focused as default after reloading *************************
 document.getElementsByName("user-name")[0].focus() ;
 
 
-// 4 job description field 
+// 4 job description field ************************************************
 const otherJob = document.getElementById("other-job-role")
 otherJob.setAttribute("type","hidden") ;
 const jobDes = document.querySelector("select[id=title]")
@@ -13,7 +13,8 @@ jobDes.addEventListener('change', (e) => {
     otherJob.setAttribute("type","hidden"); }
 })
 
-// 5 T-shirt Info 
+
+// 5 T-shirt Info ***********************************************************
 const colorDiv = document.querySelector("div.shirt-colors") ; // hides colorSelector... pops up for a split second after reload. Fix later !  
 colorDiv.style.visibility='hidden' ;
 
@@ -36,28 +37,38 @@ for (i=0; i < elCol.length ; i++) {
 ) 
 
 
-// 6 "Register for Activities" section
+// 6 "Register for Activities" section ****************************************
 const activityCheckboxes = document.querySelector("#activities-box") ;
 const checkInputs = activityCheckboxes.children ;
 
-activityCheckboxes.addEventListener( 'change', () => {
+
+activityCheckboxes.addEventListener('change', (e) => {
   let totalSum = 0 ;
-  let dateArray =[] ;
-  for (i=0; i < checkInputs.length; i++) {
-    dateArray[i] = checkInputs[i].getAttribute("data-day-and-time") ; 
-    } 
-    console.log(dateArray) ;
+  if (e.target.checked) {
+      e.target.parentElement.classList.remove("disabled") ;
+      var currentName = e.target.getAttribute("name") ;
+      var currentDateTime = e.target.getAttribute("data-day-and-time");
+      console.log(currentName)
+      console.log('/n')
+  } 
   
-  for (i=0; i < checkInputs.length; i++) {
+  for (i = 0; i < checkInputs.length; i++) {
     if( checkInputs[i].children[0].checked) {
-      totalSum += parseInt(checkInputs[i].children[0].getAttribute('data-cost')) ;
+      totalSum += parseInt(checkInputs[i].children[0].getAttribute('data-cost')) ; 
+      for (k = 0; k < checkInputs.length; k++) {
+        if(checkInputs[k].children[0].getAttribute("name") !== currentName && checkInputs[k].children[0].getAttribute("data-day-and-time") === currentDateTime) {
+          checkInputs[k].children[0].checked = false ;
+          checkInputs[k].children[0].classList.add("disabled") ;
+          checkInputs[i].children[0].classList.remove("disabled") ;
+        }   
+      }
     } 
   }
   document.querySelector(".activities-cost").innerText = 'Total: $'+ totalSum ;
  }
 )
 
-// 7 "Payment Info" section
+// 7 "Payment Info" section *****************************************************
 const payCol = document.querySelectorAll("#payment option") ;
 for (i=0 ; i < payCol.length; i++)  {
   payCol[i].removeAttribute("selected") ;
@@ -75,7 +86,7 @@ payTop.addEventListener( 'change', (e) => {
 } ) ; 
 
 
-// 8 Form validation
+// 8 Form validation *************************************************************
 
 /**
  * this helper function acts to dispaly/remove hints. It doesnt return anything
@@ -105,7 +116,7 @@ const validateName = (elem) => {
   doHinting(elem,nameIsValid) ;
   if(/^\d$/.test(elem.value)) { // if contains numbers show different message 
    document.querySelector("#name-hint").textContent= "Name cannot contain numbers"
-  } else {document.querySelector("#name-hint").textContent ="Name must contain a least one letter"
+  } else {document.querySelector("#name-hint").textContent ="Name must contain no numbers and at least one letter"
   } 
 return nameIsValid ;
 }
@@ -147,7 +158,7 @@ const validateCreditCard = () => {
   return zipElFlag && ccNumElFlag && ccCvvFlag ;   
 }
 
-// The actual execution of task 8
+// The actual execution ...
 const form = document.querySelector("form");
 
 // what happens on submit event ...
@@ -170,51 +181,22 @@ form.addEventListener('submit', e => {
 }) 
 
 
- // Accessibility part 1
+ // Accessibility part 1 ***********************************************
 
-// what happens when focus chnages on pressing tab or otherwise  
+// what happens when focus changes on pressing tab or otherwise  
 form.addEventListener('focusin', (e) => {     
   // since blur events dont bubble we loop over all children to remove the focus 
   for (i=0; i < checkInputs.length; i++) {
     checkInputs[i].classList.remove('focus') ;
   }
-  e.target.parentElement.classList.add("focus") ;  //  focus put to the "active parent"  
+  e.target.parentElement.classList.add("focus") ;  //  focus put on the "active parent"  
 }) 
 
 
-// Exceed relevant 
+// Exceedt (part, remaining is above) *******************************
 
 // 2.1 here i use the keyup on the name input  
 nameInput = document.querySelector("#name") ;
 nameInput.addEventListener('keyup', e => {
   var valName = validateName(nameInput) ; 
 })
-
-// 3 
-
-
-/* 
-1)
-Prevent users from registering for conflicting activities
-Ideally, we want to prevent users from selecting activities that occur at the same time.
-
-When a user selects an activity, loop over all of the activities, check if any have the same day and time as
- the activity that was just checked/unchecked, and as long as the matching activity is not the activity that was just 
- checked/unchecked, disable/enable the conflicting activity’s checkbox input and add/remove the ‘.disabled’ className
-  to activity’s parent label element.
-
-2) Real-time error message
-Providing form validation error indications at the moment they occur better serves your user.
-Program at least one of the required fields to listen for user interaction like a keyup. When then user interaction occurs, 
-run the validation check for that input. If you created helper functions to validate the required form inputs and sections, 
-you can call those helper functions inside of a field’s event listener.
-Detail this specific feature in your README.md file.
-Conditional error message
-Providing additional information for certain types of errors can be very helpful to your user. For example, if the email address field is empty, it would be enough to inform the user that they should add an email address.
-But if they’ve already added an email address, but formatted it incorrectly, that message wouldn’t be helpful.
-
-3)
-For at least one required form section, provide one error message if the field fails on one of its requirements, 
-and a separate message if it fails on one of its other requirements.
-Detail this specific feature in your README.md file.
-*/
