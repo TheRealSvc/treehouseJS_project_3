@@ -6,9 +6,11 @@ document.getElementsByName("user-name")[0].focus() ;
 const otherJob = document.getElementById("other-job-role")
 otherJob.setAttribute("type","hidden") ;
 const jobDes = document.querySelector("select[id=title]")
-jobDes.addEventListener('change', (e) => { if(e.target.value == "other") {
+jobDes.addEventListener('change', (e) => { 
+  if(e.target.value == "other") {
     otherJob.setAttribute("type","defaultValue") ;
-    } else {  otherJob.setAttribute("type","hidden"); }
+  } else {  
+    otherJob.setAttribute("type","hidden"); }
 })
 
 // 5 T-shirt Info 
@@ -40,13 +42,19 @@ const checkInputs = activityCheckboxes.children ;
 
 activityCheckboxes.addEventListener( 'change', () => {
   let totalSum = 0 ;
+  let dateArray =[] ;
+  for (i=0; i < checkInputs.length; i++) {
+    dateArray[i] = checkInputs[i].getAttribute("data-day-and-time") ; 
+    } 
+    console.log(dateArray) ;
+  
   for (i=0; i < checkInputs.length; i++) {
     if( checkInputs[i].children[0].checked) {
       totalSum += parseInt(checkInputs[i].children[0].getAttribute('data-cost')) ;
     } 
   }
   document.querySelector(".activities-cost").innerText = 'Total: $'+ totalSum ;
-}
+ }
 )
 
 // 7 "Payment Info" section
@@ -69,7 +77,6 @@ payTop.addEventListener( 'change', (e) => {
 
 // 8 Form validation
 
-// some helper functions first
 /**
  * this helper function acts to dispaly/remove hints. It doesnt return anything
  */
@@ -78,6 +85,9 @@ function doHinting(elem, flag) {
   flag ? elem.parentElement.lastElementChild.style.display = 'none' : elem.parentElement.lastElementChild.style.display = 'block' ;
 } 
 
+/**
+ * this helper function idenzifies the selected payment method
+ */
 function getSelectedPayment(payCol) {
   for (i=0; i < payCol.length ; i++) {
     if (payCol[i].getAttribute('selected') === 'selected') {
@@ -87,24 +97,40 @@ function getSelectedPayment(payCol) {
   return payMethodSelected ; 
 }  
 
+/**
+ * Validation of the Name field
+ */
 const validateName = (elem) => {
   const nameIsValid = /^[a-z]+$/.test(elem.value);
   doHinting(elem,nameIsValid) ;
+  if(/^\d$/.test(elem.value)) { // if contains numbers show different message 
+   document.querySelector("#name-hint").textContent= "Name cannot contain numbers"
+  } else {document.querySelector("#name-hint").textContent ="Name must contain a least one letter"
+  } 
 return nameIsValid ;
 }
 
+/**
+ * Validation of the Email field
+ */
 const validateEmail = (elem) => {
   const emailIsValid = /^\w+@\w+.com$/.test(elem.value);
   doHinting(elem,emailIsValid) ;
 return emailIsValid ;
 }
 
+/**
+ * Validation of the Activities 
+ */
 const validateActivities = (elem) => { 
  const actValid = elem.innerText !== 'Total: $0' ; 
  doHinting(elem, actValid) ;
  return actValid ; 
 }
 
+/**
+ * Validation of the Credit Card info 
+ */
 const validateCreditCard = () => {
   var zipEl = document.querySelector("#zip") ;
   var zipElFlag = /\d{5}/.test(zipEl.value) ;
@@ -124,51 +150,47 @@ const validateCreditCard = () => {
 // The actual execution of task 8
 const form = document.querySelector("form");
 
+// what happens on submit event ...
 form.addEventListener('submit', e => {
   var nameInput = document.querySelector("#name") ;
   var valName = validateName(nameInput) ;
-
   var emailInput = document.querySelector("#email") ;
   var valEmail = validateEmail(emailInput) ;
-
   var actInput = document.querySelector(".activities-cost") ;
   var valActivities = validateActivities( actInput ) ;
-  
   if (getSelectedPayment(payCol) === "credit-card") {
    var valCreditCard = validateCreditCard() ;
-   if (!valCreditCard) {
-     e.preventDefault(); // this is fired when one of the cc details is wrongly formatted
-   } else { 
+   if (valCreditCard) {
      e.target.parentNode.removeAttribute("class") ;
    }
   } 
-
-  if (!valName || !valEmail || !valActivities) {
+  if (!valName || !valEmail || !valActivities || !valCreditCard ) {
    e.preventDefault(); // this is fired when validation did not pass
   }
 }) 
 
- // Accessibility part 1
-activityCheckboxes.addEventListener('focusin', (e) => {   
-  // since blur evets dont bubble we loop over all children to remove the focus 
-  for (i=0; i < checkInputs.length; i++) {
-    checkInputs[i].removeAttribute('class') ;
-  }
-  e.target.parentElement.classList.add("focus") ;  //  focus is added on the "active parent"  
-}) 
 
-activityCheckboxes.addEventListener('blur', (e) => {   
-  e.target.parentElement.removeAttribute("focus") ;
+ // Accessibility part 1
+
+// what happens when focus chnages on pressing tab or otherwise  
+form.addEventListener('focusin', (e) => {     
+  // since blur events dont bubble we loop over all children to remove the focus 
+  for (i=0; i < checkInputs.length; i++) {
+    checkInputs[i].classList.remove('focus') ;
+  }
+  e.target.parentElement.classList.add("focus") ;  //  focus put to the "active parent"  
 }) 
 
 
 // Exceed relevant 
 
-// 2.1 i use the keyup on the name input  
+// 2.1 here i use the keyup on the name input  
 nameInput = document.querySelector("#name") ;
 nameInput.addEventListener('keyup', e => {
   var valName = validateName(nameInput) ; 
 })
+
+// 3 
 
 
 /* 
@@ -188,9 +210,11 @@ run the validation check for that input. If you created helper functions to vali
 you can call those helper functions inside of a field’s event listener.
 Detail this specific feature in your README.md file.
 Conditional error message
-Providing additional information for certain types of errors can be very helpful to your user. For example, if the email address field is empty, it would be enough to inform the user that they should add an email address. But if they’ve already added an email address, but formatted it incorrectly, that message wouldn’t be helpful.
+Providing additional information for certain types of errors can be very helpful to your user. For example, if the email address field is empty, it would be enough to inform the user that they should add an email address.
+But if they’ve already added an email address, but formatted it incorrectly, that message wouldn’t be helpful.
 
 3)
-For at least one required form section, provide one error message if the field fails on one of its requirements, and a separate message if it fails on one of its other requirements.
+For at least one required form section, provide one error message if the field fails on one of its requirements, 
+and a separate message if it fails on one of its other requirements.
 Detail this specific feature in your README.md file.
 */
