@@ -18,25 +18,6 @@ colorDiv.style.visibility='hidden' ;
 const elCol = document.querySelectorAll("#color option") ;
 const optionSel = "data-theme" ; // for testing
 
-/** 
- *  Data getter function 
- *  Reads data from html content. Specifically redas th eoptions data inside a selector
- *  @param  selector an collection of option elements under the selector 
- */
-function getOptions(selector) {
-  var label= [] ;
-  var value = [] ;
-  var dataTheme = [] ;
-  for(i=0; i < selector.length; i++) {      
-   label.push(selector[i].label) ;
-   value.push(selector[i].value)  ;
-   dataTheme.push(selector[i].getAttribute('data-theme')) ; // only relevant for data-theme 
-   } 
-   return [Value = value , Label = label , DataTheme=dataTheme] ;
-}
-//out = getOptions(elCol) ;
-//console.log(out)
-
 const designThemeSelector = document.querySelector("#design") ;
 designThemeSelector.addEventListener('change', (e) => {
 for (i=0; i < elCol.length ; i++) {
@@ -68,7 +49,6 @@ activityCheckboxes.addEventListener( 'change', () => {
 }
 )
 
-
 // 7 "Payment Info" section
 const payCol = document.querySelectorAll("#payment option") ;
 for (i=0 ; i < payCol.length; i++)  {
@@ -87,8 +67,17 @@ payTop.addEventListener( 'change', (e) => {
 } ) ; 
 
 
-// 8 ## Form validation
+// 8 Form validation
+
 // some helper functions first
+/**
+ * this helper function acts to dispaly/remove hints. It doesnt return anything
+ */
+function doHinting(elem, flag) {
+  flag ? elem.parentElement.classList.remove("not-valid") : elem.parentElement.classList.add("not-valid") ; 
+  flag ? elem.parentElement.lastElementChild.style.display = 'none' : elem.parentElement.lastElementChild.style.display = 'block' ;
+} 
+
 function getSelectedPayment(payCol) {
   for (i=0; i < payCol.length ; i++) {
     if (payCol[i].getAttribute('selected') === 'selected') {
@@ -98,117 +87,110 @@ function getSelectedPayment(payCol) {
   return payMethodSelected ; 
 }  
 
-/*
-# some stuff from the warmup
-const form = document.querySelector("form");
-const nameElement = document.querySelector("#name");
-const email = document.querySelector("#email");
-const nameValidator = () => { } 
-form.addEventListener('submit', e => {
-  e.preventDefault(); // this is fired when validation did not pass
-
-*/
-
-
-const validateName = (str) => {
-  const nameIsValid = /^[a-z]+$/.test(str);
-  nameIsValid ? console.log('korrekt') : console.log("falsch") ;
+const validateName = (elem) => {
+  const nameIsValid = /^[a-z]+$/.test(elem.value);
+  doHinting(elem,nameIsValid) ;
 return nameIsValid ;
 }
 
-
-const validateEmail = (str) => {
-  const emailIsValid = /^\w+@\w+.com$/.test(str);
-  emailIsValid ? console.log('korrekt') : console.log("falsch") ;
+const validateEmail = (elem) => {
+  const emailIsValid = /^\w+@\w+.com$/.test(elem.value);
+  doHinting(elem,emailIsValid) ;
 return emailIsValid ;
 }
 
-
-const validateActivities = (str) => {
- return str=='Total: $0' ? false : true ; 
+const validateActivities = (elem) => { 
+ const actValid = elem.innerText !== 'Total: $0' ; 
+ doHinting(elem, actValid) ;
+ return actValid ; 
 }
-
 
 const validateCreditCard = () => {
-  zipEl = document.querySelector("#zip") ;
-  ccNumEl = document.querySelector("#cc-num") ; 
-  ccCvv = document.querySelector("#cvv") ;
-  return /^\d{3}$/.test(ccCvv.value) && /^\d{5}$/.test(zipEl.value) && /^\d{13-16}$/.test(ccNumEl.value)   ;   
+  var zipEl = document.querySelector("#zip") ;
+  var zipElFlag = /\d{5}/.test(zipEl.value) ;
+  doHinting(zipEl, zipElFlag)
+ 
+  var ccNumEl = document.querySelector("#cc-num") ; 
+  var ccNumElFlag = /^\d{13,16}$/.test(ccNumEl.value) ;
+  doHinting(ccNumEl,ccNumElFlag) ;
+ 
+  var ccCvv = document.querySelector("#cvv") ;
+  var ccCvvFlag =/\d{3}/.test(ccCvv.value) ;
+  doHinting(ccCvv, ccCvvFlag) ;
+
+  return zipElFlag && ccNumElFlag && ccCvvFlag ;   
 }
 
-
-//const submitButton = document.querySelector("button[type=submit]") ;
-//submitButton.addEventListener('click' , () => {
-
+// The actual execution of task 8
 const form = document.querySelector("form");
 
 form.addEventListener('submit', e => {
-var valName = validateName(document.querySelector("#name").value) ;
-var valEmail = validateEmail(document.querySelector("#email").value) ;
-var valActivities = validateActivities(  document.querySelector(".activities-cost").innerText ) ;
+  var nameInput = document.querySelector("#name") ;
+  var valName = validateName(nameInput) ;
 
-if (getSelectedPayment(payCol) === "credit-card") {
-  var valCreditCard = validateCreditCard() ;
-  if (!valCreditCard) {
-    alert("Something is wrong with the credit card entries !") ;
+  var emailInput = document.querySelector("#email") ;
+  var valEmail = validateEmail(emailInput) ;
+
+  var actInput = document.querySelector(".activities-cost") ;
+  var valActivities = validateActivities( actInput ) ;
+  
+  if (getSelectedPayment(payCol) === "credit-card") {
+   var valCreditCard = validateCreditCard() ;
+   if (!valCreditCard) {
+     e.preventDefault(); // this is fired when one of the cc details is wrongly formatted
+   } else { 
+     e.target.parentNode.removeAttribute("class") ;
+   }
+  } 
+
+  if (!valName || !valEmail || !valActivities) {
+   e.preventDefault(); // this is fired when validation did not pass
   }
-} 
+}) 
 
-if (!valName) {
-  console.log("gspkerlb") ;
-  alert("The Name wasnt spelled correctly !")
-  e.preventDefault(); // this is fired when validation did not pass
-}
+ // Accessibility part 1
+activityCheckboxes.addEventListener('focusin', (e) => {   
+  // since blur evets dont bubble we loop over all children to remove the focus 
+  for (i=0; i < checkInputs.length; i++) {
+    checkInputs[i].removeAttribute('class') ;
+  }
+  e.target.parentElement.classList.add("focus") ;  //  focus is added on the "active parent"  
+}) 
 
-if (!valEmail) {
-  console.log("gspkerlb") ;
-  alert("The Email isnt a valid adress !")
-  e.preventDefault(); // this is fired when validation did not pass
-}
-
-if (!valActivities) {
-  console.log("gspkerlb") ;
-  alert("Please select at least one activity !")
-  e.preventDefault(); // this is fired when validation did not pass
-}
-
+activityCheckboxes.addEventListener('blur', (e) => {   
+  e.target.parentElement.removeAttribute("focus") ;
 }) 
 
 
+// Exceed relevant 
 
-/*
-## Form validation
-Users shouldn’t be able to submit a form without the required information, or with invalid information. 
-To prevent that from happening, avoid using plugins, libraries, snippets or the built-in HTML5 validation, and create your own custom form validation.
+// 2.1 i use the keyup on the name input  
+nameInput = document.querySelector("#name") ;
+nameInput.addEventListener('keyup', e => {
+  var valName = validateName(nameInput) ; 
+})
 
-Note: Form submission behavior will differ depending on whether you’re running the project with a local server, or just viewing the files in the browser. 
-It is recommended that you view the files in the browser instead of serving them locally. This helps facilitate development and testing, and this is how the project will be reviewed.
 
-Program the form element to listen for the submit event. When the form submission is detected, each required form field or section should be validated,
- or checked to ensure that they have been filled out correctly. If any of the following required fields is not valid, the form’s submission should be prevented.
+/* 
+1)
+Prevent users from registering for conflicting activities
+Ideally, we want to prevent users from selecting activities that occur at the same time.
 
-1)  The "Name" field cannot be blank or empty.
+When a user selects an activity, loop over all of the activities, check if any have the same day and time as
+ the activity that was just checked/unchecked, and as long as the matching activity is not the activity that was just 
+ checked/unchecked, disable/enable the conflicting activity’s checkbox input and add/remove the ‘.disabled’ className
+  to activity’s parent label element.
 
-2) The "Email Address" field must contain a validly formatted email address. The email address does not need to be a real email address, just formatted like one.
- For example: dave@teamtreehouse.com. A few characters for the username, followed by "@", followed by a few more characters and a ".com" for the domain name. 
- You don’t have to account for other top-level domains, like .org, .net, etc.
+2) Real-time error message
+Providing form validation error indications at the moment they occur better serves your user.
+Program at least one of the required fields to listen for user interaction like a keyup. When then user interaction occurs, 
+run the validation check for that input. If you created helper functions to validate the required form inputs and sections, 
+you can call those helper functions inside of a field’s event listener.
+Detail this specific feature in your README.md file.
+Conditional error message
+Providing additional information for certain types of errors can be very helpful to your user. For example, if the email address field is empty, it would be enough to inform the user that they should add an email address. But if they’ve already added an email address, but formatted it incorrectly, that message wouldn’t be helpful.
 
-3) The "Register for Activities" section must have at least one activity selected.
-
-4) If and only if credit card is the selected payment method:
-  The "Card number" field must contain a 13 - 16 digit credit card number with no dashes or spaces. The value does not need to be a real credit card number.
-  The "Zip code" field must contain a 5 digit number.
-  The "CVV" field must contain a 3 digit number.
-  Project Warm Up: For some experience with the techniques you’ll use in this section, complete this short exercise - Form Input Validation.
-
-Note:
-Avoid using snippets, libraries or plugins.
-Only validate the three credit card fields if "credit card" is the selected payment option.
-Only call `preventDefault` on the `event` object if one or more of the required fields is invalid.
-Pro Tip:A recommended approach is to create helper functions for each of the required fields to be validated. 
-For example, for the "Name" field, a function could check the "Name" field’s value. If it equals an empty string or only blank spaces,
- the function could log out a helpful statement and return false. Otherwise it would return true. And then in the `submit` event listener, 
- you could call that helper function and check what it returns: if it returns false, you would prevent the form from submitting. 
-Otherwise, you would avoid preventing form submission, and allow the `submit` handler to either submit or move onto checking the next required field.
-
+3)
+For at least one required form section, provide one error message if the field fails on one of its requirements, and a separate message if it fails on one of its other requirements.
+Detail this specific feature in your README.md file.
 */
