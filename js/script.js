@@ -15,18 +15,19 @@ jobDes.addEventListener('change', (e) => {
 
 
 // 5 T-shirt Info ***********************************************************
-const colorDiv = document.querySelector("div.shirt-colors") ; // hides colorSelector... pops up for a split second after reload. Fix later !  
+const colorDiv = document.querySelector("div.shirt-colors") ; // hides colorSelector
 colorDiv.style.visibility='hidden' ;
 
 const elCol = document.querySelectorAll("#color option") ;
-const optionSel = "data-theme" ; // for testing
+const optionSel = "data-theme" ; 
 
 const designThemeSelector = document.querySelector("#design") ;
 designThemeSelector.addEventListener('change', (e) => {
-for (i=0; i < elCol.length ; i++) {
+var flag = true  ;
+for (i=0; i < elCol.length ; i++) {  
   if(elCol[i].getAttribute("data-theme")  === e.target.value) {    
-    elCol[i].style.display = 'block' ;
-    elCol[i].setAttribute("selected","selected") ;  // that did the trick to set an valid element as selected (together with the "remove" in the else) 
+    elCol[i].style.display = 'block' ; // that makes the option visible 
+    if (flag) { elCol[i].setAttribute("selected","selected") }  ;  // that updates the visible color option to select the first match 
   } else  { 
     elCol[i].style.display = 'none' ;
     elCol[i].removeAttribute("selected") ;
@@ -48,8 +49,6 @@ activityCheckboxes.addEventListener('change', (e) => {
       e.target.parentElement.classList.remove("disabled") ;
       var currentName = e.target.getAttribute("name") ;
       var currentDateTime = e.target.getAttribute("data-day-and-time");
-      console.log(currentName)
-      console.log('/n')
   } 
   
   for (i = 0; i < checkInputs.length; i++) {
@@ -77,7 +76,6 @@ for (i=0 ; i < payCol.length; i++)  {
 
 const payTop = document.querySelector("#payment") ;
 payTop.addEventListener( 'change', (e) => {
-  console.log(e.target.value) ;
   if(e.target.value==='credit-card') {
     document.querySelector('#credit-card').style.display='block' ;
   } else {
@@ -181,7 +179,7 @@ form.addEventListener('submit', e => {
 }) 
 
 
- // Accessibility part 1 ***********************************************
+ // 9 Accessibility part 1 ***********************************************
 
 // what happens when focus changes on pressing tab or otherwise  
 form.addEventListener('focusin', (e) => {     
