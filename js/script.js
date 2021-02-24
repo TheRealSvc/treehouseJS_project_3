@@ -1,6 +1,10 @@
 // 3 have name focused as default after reloading *************************
 document.getElementsByName("user-name")[0].focus() ;
 
+// display only credit card  
+document.querySelector('#credit-card').style.display='block' ;
+document.querySelector('#paypal').style.display='none' ;
+document.querySelector('#bitcoin').style.display='none' ;
 
 // 4 job description field ************************************************
 const otherJob = document.getElementById("other-job-role")
@@ -42,7 +46,6 @@ for (i=0; i < elCol.length ; i++) {
 const activityCheckboxes = document.querySelector("#activities-box") ;
 const checkInputs = activityCheckboxes.children ;
 
-
 activityCheckboxes.addEventListener('change', (e) => {
   let totalSum = 0 ;
   if (e.target.checked) {
@@ -78,28 +81,49 @@ const payTop = document.querySelector("#payment") ;
 payTop.addEventListener( 'change', (e) => {
   if(e.target.value==='credit-card') {
     document.querySelector('#credit-card').style.display='block' ;
-  } else {
+    document.querySelector('#paypal').style.display='none' ;
+    document.querySelector('#bitcoin').style.display='none' ;
+  } else if (e.target.value==='paypal'){
+    document.querySelector('#paypal').style.display='block' ;
     document.querySelector('#credit-card').style.display='none' ;
+    document.querySelector('#bitcoin').style.display='none' ;
+  } else if (e.target.value==='bitcoin'){
+    document.querySelector('#bitcoin').style.display='block' ;
+    document.querySelector('#credit-card').style.display='none' ;
+    document.querySelector('#paypal').style.display='none' ;
   }
-} ) ; 
+}) ; 
 
 
 // 8 Form validation *************************************************************
 
 /**
- * this helper function acts to dispaly/remove hints. It doesnt return anything
+ * this helper function acts to dispaly/remove hints. It doesn't return anything
  */
-function doHinting(elem, flag) {
-  flag ? elem.parentElement.classList.remove("not-valid") : elem.parentElement.classList.add("not-valid") ; 
-  flag ? elem.parentElement.lastElementChild.style.display = 'none' : elem.parentElement.lastElementChild.style.display = 'block' ;
+function doHinting(elem, flag, actFlag) {
+  if(flag && !actFlag) { 
+    elem.parentElement.classList.remove("not-valid") ; elem.parentElement.classList.add("valid") ;
+    elem.parentElement.lastElementChild.style.display = 'block' ; elem.parentElement.lastElementChild.style.display = 'none' ;
+  } else if(!flag && !actFlag) {  
+    elem.parentElement.classList.remove("valid") ; elem.parentElement.classList.add("not-valid") ;
+    elem.parentElement.lastElementChild.style.display = 'none' ; elem.parentElement.lastElementChild.style.display = 'block' ;
+  }
+  if(flag && actFlag) { 
+    elem.parentElement.parentElement.classList.remove("not-valid") ; elem.parentElement.parentElement.classList.add("valid") ;
+    elem.parentElement.lastElementChild.style.display = 'block' ; elem.parentElement.lastElementChild.style.display = 'none' ;
+  } else if(!flag && actFlag)  {  
+    elem.parentElement.parentElement.classList.remove("valid") ; elem.parentElement.parentElement.classList.add("not-valid") ;
+    elem.parentElement.lastElementChild.style.display = 'none' ; elem.parentElement.lastElementChild.style.display = 'block' ;
+  }
+  
 } 
 
 /**
- * this helper function idenzifies the selected payment method
+ * this helper function identifies the selected payment method
  */
 function getSelectedPayment(payCol) {
-  for (i=0; i < payCol.length ; i++) {
-    if (payCol[i].getAttribute('selected') === 'selected') {
+  for (i=1; i < payCol.length ; i++) {
+    if (payCol[i].selected === true) {
       var payMethodSelected = payCol[i].value ;
       break ; }  
   }
@@ -110,11 +134,11 @@ function getSelectedPayment(payCol) {
  * Validation of the Name field
  */
 const validateName = (elem) => {
-  const nameIsValid = /^[a-z]+$/.test(elem.value);
-  doHinting(elem,nameIsValid) ;
+  const nameIsValid = /^[a-z]+$/.test(elem.value) ;
+  doHinting(elem,nameIsValid, false) ;
   if(/^\d$/.test(elem.value)) { // if contains numbers show different message 
    document.querySelector("#name-hint").textContent= "Name cannot contain numbers"
-  } else {document.querySelector("#name-hint").textContent ="Name must contain no numbers and at least one letter"
+  } else { document.querySelector("#name-hint").textContent ="Name must contain no numbers and at least one letter"
   } 
 return nameIsValid ;
 }
@@ -123,8 +147,8 @@ return nameIsValid ;
  * Validation of the Email field
  */
 const validateEmail = (elem) => {
-  const emailIsValid = /^\w+@\w+.com$/.test(elem.value);
-  doHinting(elem,emailIsValid) ;
+  const emailIsValid = /^\w+@\w+.com$/.test(elem.value) ;
+  doHinting(elem,emailIsValid, false) ;
 return emailIsValid ;
 }
 
@@ -133,7 +157,7 @@ return emailIsValid ;
  */
 const validateActivities = (elem) => { 
  const actValid = elem.innerText !== 'Total: $0' ; 
- doHinting(elem, actValid) ;
+ doHinting(elem, actValid, true) ;
  return actValid ; 
 }
 
@@ -142,21 +166,21 @@ const validateActivities = (elem) => {
  */
 const validateCreditCard = () => {
   var zipEl = document.querySelector("#zip") ;
-  var zipElFlag = /\d{5}/.test(zipEl.value) ;
-  doHinting(zipEl, zipElFlag)
+  var zipElFlag = /^\d{5}$/.test(zipEl.value) ;
+  doHinting(zipEl, zipElFlag, false)
  
   var ccNumEl = document.querySelector("#cc-num") ; 
   var ccNumElFlag = /^\d{13,16}$/.test(ccNumEl.value) ;
-  doHinting(ccNumEl,ccNumElFlag) ;
+  doHinting(ccNumEl,ccNumElFlag, false) ;
  
   var ccCvv = document.querySelector("#cvv") ;
-  var ccCvvFlag =/\d{3}/.test(ccCvv.value) ;
-  doHinting(ccCvv, ccCvvFlag) ;
+  var ccCvvFlag =/^\d{3}$/.test(ccCvv.value) ;
+  doHinting(ccCvv, ccCvvFlag, false) ;
 
   return zipElFlag && ccNumElFlag && ccCvvFlag ;   
 }
 
-// The actual execution ...
+// The actual execution follows below ... 
 const form = document.querySelector("form");
 
 // what happens on submit event ...
@@ -167,13 +191,13 @@ form.addEventListener('submit', e => {
   var valEmail = validateEmail(emailInput) ;
   var actInput = document.querySelector(".activities-cost") ;
   var valActivities = validateActivities( actInput ) ;
-  if (getSelectedPayment(payCol) === "credit-card") {
+  var ccSelectFlag = getSelectedPayment(payCol) === "credit-card" ;
+  if (ccSelectFlag) {
    var valCreditCard = validateCreditCard() ;
-   if (valCreditCard) {
-     e.target.parentNode.removeAttribute("class") ;
-   }
+   //if (valCreditCard) {
+   //  e.target.parentNode.removeAttribute("class") ;
   } 
-  if (!valName || !valEmail || !valActivities || !valCreditCard ) {
+  if (!valName || !valEmail || !valActivities || (!valCreditCard && ccSelectFlag) ) {
    e.preventDefault(); // this is fired when validation did not pass
   }
 }) 
@@ -191,7 +215,7 @@ form.addEventListener('focusin', (e) => {
 }) 
 
 
-// Exceedt (part, remaining is above) *******************************
+// Exceed (part, remaining is above) *******************************
 
 // 2.1 here i use the keyup on the name input  
 nameInput = document.querySelector("#name") ;
