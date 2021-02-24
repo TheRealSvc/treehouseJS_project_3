@@ -99,8 +99,11 @@ payTop.addEventListener( 'change', (e) => {
 
 /**
  * this helper function acts to dispaly/remove hints. It doesn't return anything
+ * In this section i deviated from setting the valid, not-valid className to the fieldset of the activity. In my opinion it looks better ...
+ * at the label. The out commented lines would be used to use the fieldset. 
  */
 function doHinting(elem, flag, actFlag) {
+  //const actElem = document.querySelector("#activities") ;
   if(flag && !actFlag) { 
     elem.parentElement.classList.remove("not-valid") ; elem.parentElement.classList.add("valid") ;
     elem.parentElement.lastElementChild.style.display = 'block' ; elem.parentElement.lastElementChild.style.display = 'none' ;
@@ -109,13 +112,14 @@ function doHinting(elem, flag, actFlag) {
     elem.parentElement.lastElementChild.style.display = 'none' ; elem.parentElement.lastElementChild.style.display = 'block' ;
   }
   if(flag && actFlag) { 
-    elem.parentElement.parentElement.classList.remove("not-valid") ; elem.parentElement.parentElement.classList.add("valid") ;
+    elem.parentElement.firstElementChild.classList.remove("not-valid") ; elem.parentElement.firstElementChild.classList.add("valid") ;
+    //actElem.classList.remove("not-valid")  ; actElem.classList.add("valid")  ;
     elem.parentElement.lastElementChild.style.display = 'block' ; elem.parentElement.lastElementChild.style.display = 'none' ;
   } else if(!flag && actFlag)  {  
-    elem.parentElement.parentElement.classList.remove("valid") ; elem.parentElement.parentElement.classList.add("not-valid") ;
+    elem.parentElement.firstElementChild.classList.remove("valid") ; elem.parentElement.firstElementChild.classList.add("not-valid") ;
+    //actElem.classList.remove("valid")  ; actElem.classList.add("not-valid")  ;
     elem.parentElement.lastElementChild.style.display = 'none' ; elem.parentElement.lastElementChild.style.display = 'block' ;
-  }
-  
+  }  
 } 
 
 /**

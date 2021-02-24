@@ -30,7 +30,7 @@ Pattern similar to T-Shirt info. Same question regarding "selected".
 
 ## 8 form validation
 Every validation has its own function based on regex. Two more helper function doHinting and getSelecetdPayment are in place. getSelectedPayment only return the selected payment method while doHinting only updated the hints.The main eventListener just calls all the helper functions. preventDefault is called when any of the checks didnt pass.
-
+ In this section i deviated from setting the "valid / not-valid" className to the fieldset of the activity. In my opinion it looks better at the label. The out commented lines would be used to put the valid className on the fieldset. 
 
 ## 9 Accessibility 
 In order to incease the visibility while tabbing through, a focusin event is detected on the level of the form. First all focus is removed from the checkboxes seperately, then the focus set for the parent of the current event.target.   
