@@ -138,7 +138,7 @@ function getSelectedPayment(payCol) {
  * Validation of the Name field
  */
 const validateName = (elem) => {
-  const nameIsValid = /^[a-z]+$/.test(elem.value) ;
+  const nameIsValid = /^[a-zA-Z\s]+$/.test(elem.value) ;
   doHinting(elem,nameIsValid, false) ;
   if(/^\d$/.test(elem.value)) { // if contains numbers show different message 
    document.querySelector("#name-hint").textContent= "Name cannot contain numbers"
